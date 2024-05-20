@@ -18,9 +18,9 @@ public class PlayerSave
 		boolean EndOfFile = false;
 		int ReadMode = 0;
 		BufferedReader characterfile = null;
-		BufferedReader characterfile2 = null;
+		// BufferedReader characterfile2 = null;
 		boolean File1 = false;
-		boolean File2 = false;
+		// boolean File2 = false;
 		
 		try {
 			characterfile = new BufferedReader(new FileReader("./chars/"+playerName+".txt"));
@@ -29,7 +29,7 @@ public class PlayerSave
 		}
 		
 		if (File1) {
-			File myfile1 = new File ("./chars/"+playerName+".txt");
+			// File myfile1 = new File ("./chars/"+playerName+".txt");
 		} else {
 			Misc.println(playerName+": character file not found.");
 			p.newPlayer = true;
@@ -169,7 +169,7 @@ public class PlayerSave
 	*Saving
 	**/
 	public static boolean saveGame(Player p) {
-		if(!p.saveFile) {
+		if(!Player.saveFile) {
 			return false;
 		}
 		BufferedWriter characterfile = null;
