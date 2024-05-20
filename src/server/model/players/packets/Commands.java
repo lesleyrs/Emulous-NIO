@@ -48,6 +48,10 @@ public class Commands implements PacketType {
 				}
 			}
 			
+			if (playerCommand.startsWith("pos")) {
+				c.sendMessage("You are standing on X="+c.absX+" Y="+c.absY);
+			}
+			
 			if (playerCommand.equalsIgnoreCase("empty")) {
 				c.getItems().removeAllItems();
 			}

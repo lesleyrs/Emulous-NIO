@@ -1,0 +1,21 @@
+spam click crash:
+java.lang.ArrayIndexOutOfBoundsException: Index 54275 out of bounds for length 2662
+        at Game.updateSequences(Game.java:8329)
+        at Game.updateEntity(Game.java:8051)
+        at Game.updatePlayers(Game.java:9407)
+        at Game.updateGame(Game.java:4131)
+        at Game.update(Game.java:1115)
+        at GameShell.run(GameShell.java:156)
+        at Game.run(Game.java:690)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+
+npc kill crash:
+java.lang.ArrayIndexOutOfBoundsException: Index 2304 out of bounds for length 2260
+        at Game.updateSequences(Game.java:8382)
+        at Game.updateEntity(Game.java:8073)
+        at Game.updateNPCs(Game.java:8041)
+        at Game.updateGame(Game.java:4152)
+        at Game.update(Game.java:1132)
+        at GameShell.run(GameShell.java:156)
+        at Game.run(Game.java:707)
+        at java.base/java.lang.Thread.run(Thread.java:1583)

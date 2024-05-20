@@ -4,6 +4,13 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferUtils {
 
+	public static void readBytes(ByteBuffer buffer, byte abyte0[], int i, int j)
+	{
+	    for(int k = j; k < j + i; k++) {
+	        abyte0[k] = buffer.get();
+			}
+	}
+
 	public static int readSignedWord(ByteBuffer buffer) {
 	/*	int value = 0;
 		value |= buffer.get() & 0xff << 8;

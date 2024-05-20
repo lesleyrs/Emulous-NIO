@@ -1,14 +1,15 @@
 package server.model.players;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.security.SecureRandom;
 
 import server.*;
 import server.util.*;
 import server.model.items.*;
+import server.model.npcs.NPCHandler;
 import server.model.shops.*;
 
 public class Client extends Player {
@@ -157,13 +158,23 @@ public class Client extends Player {
 				if (loginEncryptPacketSize != tmp) {
 					throw new Exception("Encrypted packet data length ("+loginEncryptPacketSize+") different from length byte thereof ("+tmp+")");
 				}
-				tmp = inData.get() & 0xFF;
+				
+				final BigInteger RSA_EXPONENT = new BigInteger("4563042879983685819415859508309337987464904274730456483940553788384065737798175536144539635545496149193181089921240252410947054964044522362195913220892133");
+				final BigInteger RSA_MODULUS = new BigInteger("7162900525229798032761816791230527296329313291232324290237849263501208207972894053929065636522363163621000728841182238772712427862772219676577293600221789");
+				final byte[] rsaPayload = new byte[loginEncryptPacketSize];
+				ByteBufferUtils.readBytes(inData, rsaPayload, loginEncryptPacketSize, 0);
+				Stream rsaInputStream = new Stream(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray());
+				// for (int i = 0; i < rsaPayload.length; i++) {
+				//   System.out.format("0x%02X ", rsaPayload[i]);
+				// }
+				
+				tmp = rsaInputStream.readUnsignedByte();
 				if (tmp != 10) {
 					throw new Exception("Encrypted packet Id was "+tmp+" but expected 10");
 				}
-				clientSessionKey = ByteBufferUtils.readQWord(inData);
-				serverSessionKey = ByteBufferUtils.readQWord(inData);
-				int UID = ByteBufferUtils.readDWord(inData);
+				clientSessionKey = rsaInputStream.readQWord();
+				serverSessionKey = rsaInputStream.readQWord();
+				int UID = rsaInputStream.readDWord();
 
 				if (UID == 0 || UID == 99735086) { // all for free bot and syi
 													// will get ip banned
@@ -175,13 +186,13 @@ public class Client extends Player {
 					saveFile = false;
 				}
 
-				playerName = ByteBufferUtils.readString(inData);
+				playerName = rsaInputStream.readString();
 				playerName = playerName.replaceAll("_", " ");
 				playerName = playerName.replaceAll("[^A-z 0-9]", " ");
 				playerName = (playerName.substring(0, 1).toUpperCase() + playerName.substring(1).toLowerCase()).trim();
 				if (playerName == null || playerName.length() == 0)
 					throw new Exception("Blank username.");
-				playerPass = ByteBufferUtils.readString(inData);
+				playerPass = rsaInputStream.readString();
 				Misc.println(playerName + " has connected - UID: " + UID);
 
 				int sessionKey[] = new int[4];
@@ -215,7 +226,7 @@ public class Client extends Player {
 					disconnected = true;
 					saveFile = false;
 				}
-				if (Server.playerHandler.isPlayerOn(playerName)) {
+				if (PlayerHandler.isPlayerOn(playerName)) {
 					returnCode = 5;
 					disconnected = true;
 					saveFile = false;
@@ -240,7 +251,7 @@ public class Client extends Player {
 				return true;
 			}
 		} catch (Exception e) {
-			Misc.println("Login fail from " + socketChannel.socket().getInetAddress().getHostAddress());
+			Misc.println(e + " Login fail from " + socketChannel.socket().getInetAddress().getHostAddress());
 			destruct();
 			disconnected = true;
 			return false;
@@ -311,13 +322,20 @@ public class Client extends Player {
 		} else {
 			setSidebarInterface(6, 12855); // ancient
 		}
-		setSidebarInterface(7, 1);
+		// NOTE: makes it not clickable
+		// setSidebarInterface(7, 1);
+		setSidebarInterface(7, -1);
 		setSidebarInterface(8, 5065);
 		setSidebarInterface(9, 5715);
 		setSidebarInterface(10, 2449);
-		setSidebarInterface(11, 4445);
+		if (lowMemoryVersion == 1) {
+			setSidebarInterface(11, 4445);
+			setSidebarInterface(13, 6299);
+		} else {
+			setSidebarInterface(11, 904);
+			setSidebarInterface(13, 962);
+		}
 		setSidebarInterface(12, 147);
-		setSidebarInterface(13, 6299);
 		setSidebarInterface(0, 2423);
 		getPA().sendFrame36(43, 0);
 		if (newPlayer) {
@@ -454,8 +472,8 @@ public class Client extends Player {
 			}
 		}
 
-		if ((clickNpcType > 0) && Server.npcHandler.npcs[npcIndex] != null) {
-			if (goodDistance(getX(), getY(), Server.npcHandler.npcs[npcIndex].getX(), Server.npcHandler.npcs[npcIndex].getY(), 1)) {
+		if ((clickNpcType > 0) && NPCHandler.npcs[npcIndex] != null) {
+			if (goodDistance(getX(), getY(), NPCHandler.npcs[npcIndex].getX(), NPCHandler.npcs[npcIndex].getY(), 1)) {
 				if (clickNpcType == 1) {
 					getActions().firstClickNpc(npcType);
 				}
@@ -510,7 +528,7 @@ public class Client extends Player {
 		}
 
 		if (inWild()) {
-			int oldlevel = wildLevel;
+			// int oldlevel = wildLevel;
 			wildLevel = (((absY - 3520) / 8) + 1);
 			getPA().walkableInterface(197);
 			if (Config.SINGLE_AND_MULTI_ZONES) {
@@ -602,7 +620,7 @@ public class Client extends Player {
 		}
 
 		if (hitDelay == 2 && projectileStage == 1) {
-			if (Server.npcHandler.npcs[oldNpcIndex] != null) {
+			if (NPCHandler.npcs[oldNpcIndex] != null) {
 				getCombat().fireProjectileNpc();
 			}
 			if (Server.playerHandler.players[oldPlayerIndex] != null) {

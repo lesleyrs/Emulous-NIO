@@ -5,7 +5,7 @@ import java.util.*;
 
 import server.*;
 import server.model.players.*;
-import server.model.objects.*;
+import server.model.objects.Objects;
 import server.util.*;
 
 /**

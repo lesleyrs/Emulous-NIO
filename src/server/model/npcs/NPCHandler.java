@@ -76,7 +76,7 @@ public class NPCHandler {
 	**/
 	
 	public static int getAttackEmote(int i) {
-		switch(Server.npcHandler.npcs[i].npcType) {		
+		switch(NPCHandler.npcs[i].npcType) {		
 
 			case 2035: //spider
 			return 143;	
@@ -335,10 +335,10 @@ public class NPCHandler {
 							if(npcs[i].attackTimer == 0) {
 								if(c != null) {
 									attackPlayer(c, i);
-								} else {
-									npcs[i].killerId = 0;
-									npcs[i].underAttack = false;
-									npcs[i].facePlayer(0);
+								// } else {
+								// 	npcs[i].killerId = 0;
+								// 	npcs[i].underAttack = false;
+								// 	npcs[i].facePlayer(0);
 								}
 							}
 						} else {
@@ -493,7 +493,7 @@ public class NPCHandler {
 	
 	public int getNpcKillerId(int npcId) {
 		int oldDamage = 0;
-		int count = 0;
+		// int count = 0;
 		int killerId = 0;
 		for (int p = 1; p < Config.MAX_PLAYERS; p++)  {	
 			if (Server.playerHandler.players[p] != null) {
@@ -696,8 +696,8 @@ public class NPCHandler {
 					npcs[i].attackType = 0;
 					loadSpell(i);
 					if(npcs[i].projectileId > 0) {
-						int nX = Server.npcHandler.npcs[i].getX();
-						int nY = Server.npcHandler.npcs[i].getY();
+						int nX = NPCHandler.npcs[i].getX();
+						int nY = NPCHandler.npcs[i].getY();
 						int pX = c.getX();
 						int pY = c.getY();
 						int offX = (nY - pY)* -1;
@@ -725,7 +725,7 @@ public class NPCHandler {
 				int damage = 0;
 				if(npcs[i].attackType == 0) {
 					damage = Misc.random(npcs[i].maxHit);
-					if (10 + Misc.random(c.getCombat().calculateMeleeDefence()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
+					if (10 + Misc.random(c.getCombat().calculateMeleeDefence()) > Misc.random(NPCHandler.npcs[i].attack)) {
 						damage = 0;
 					}				
 					if(c.prayerActive[14]) { // protect from melee
@@ -737,7 +737,7 @@ public class NPCHandler {
 				}
 				if(npcs[i].attackType == 1) { // range
 					damage = Misc.random(npcs[i].maxHit);
-					if (10 + Misc.random(c.getCombat().calculateRangeDefence()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
+					if (10 + Misc.random(c.getCombat().calculateRangeDefence()) > Misc.random(NPCHandler.npcs[i].attack)) {
 						damage = 0;
 					}					
 					if(c.prayerActive[12]) { // protect from range
@@ -751,7 +751,7 @@ public class NPCHandler {
 				if(npcs[i].attackType == 2) { // magic
 					damage = Misc.random(npcs[i].maxHit);
 					boolean magicFailed = false;
-					if (10 + Misc.random(c.getCombat().calculateMagicDefence()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
+					if (10 + Misc.random(c.getCombat().calculateMagicDefence()) > Misc.random(NPCHandler.npcs[i].attack)) {
 						damage = 0;
 						magicFailed = true;
 					}				
@@ -823,7 +823,7 @@ public class NPCHandler {
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
+		// int ReadMode = 0;
 		BufferedReader characterfile = null;
 		try {
 			characterfile = new BufferedReader(new FileReader("./"+FileName));
@@ -887,7 +887,7 @@ public class NPCHandler {
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
+		// int ReadMode = 0;
 		BufferedReader characterfile = null;
 		try {
 			characterfile = new BufferedReader(new FileReader("./"+FileName));
