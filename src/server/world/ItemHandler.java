@@ -232,26 +232,19 @@ public class ItemHandler {
 		ItemList[slot] = newItemList;
 	}
 
-	public boolean loadItemList(String FileName) {
+	public void loadItemList(String FileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
-		BufferedReader characterfile = null;
-		try {
-			characterfile = new BufferedReader(new FileReader("./data/"+FileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(FileName+": file not found.");
-			return false;
-		}
-		try {
+		// int ReadMode = 0;
+		try (BufferedReader characterfile = new BufferedReader(new FileReader("./data/"+FileName))) {
 			line = characterfile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(FileName+": error loading file.");
-			return false;
+			return;
 		}
 		while(EndOfFile == false && line != null) {
 			line = line.trim();
@@ -278,17 +271,7 @@ public class ItemHandler {
 					}
 					newItemList(Integer.parseInt(token3[0]), token3[1].replaceAll("_", " "), token3[2].replaceAll("_", " "), Double.parseDouble(token3[4]), Double.parseDouble(token3[4]), Double.parseDouble(token3[6]), Bonuses);
 				}
-			} else {
-				if (line.equals("[ENDOFITEMLIST]")) {
-					try { characterfile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = characterfile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { characterfile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
 }

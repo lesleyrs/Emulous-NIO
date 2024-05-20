@@ -816,7 +816,7 @@ public class NPCHandler {
 	}
 	
        
-	public boolean loadAutoSpawn(String FileName) {
+	public void loadAutoSpawn(String FileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
@@ -824,18 +824,11 @@ public class NPCHandler {
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
 		// int ReadMode = 0;
-		BufferedReader characterfile = null;
-		try {
-			characterfile = new BufferedReader(new FileReader("./"+FileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(FileName+": file not found.");
-			return false;
-		}
-		try {
+		try (BufferedReader characterfile = new BufferedReader(new FileReader("./"+FileName))) {
 			line = characterfile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(FileName+": error loading file.");
-			return false;
+			return;
 		}
 		while(EndOfFile == false && line != null) {
 			line = line.trim();
@@ -855,18 +848,8 @@ public class NPCHandler {
 					newNPC(Integer.parseInt(token3[0]), Integer.parseInt(token3[1]), Integer.parseInt(token3[2]), Integer.parseInt(token3[3]), Integer.parseInt(token3[4]), getNpcListHP(Integer.parseInt(token3[0])), Integer.parseInt(token3[5]), Integer.parseInt(token3[6]), Integer.parseInt(token3[7]));
 				
 				}
-			} else {
-				if (line.equals("[ENDOFSPAWNLIST]")) {
-					try { characterfile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = characterfile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { characterfile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
 
 	public int getNpcListHP(int npcId) {
@@ -880,7 +863,7 @@ public class NPCHandler {
 		return 0;
 	}
 
-	public boolean loadNPCList(String FileName) {
+	public void loadNPCList(String FileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
@@ -888,18 +871,11 @@ public class NPCHandler {
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
 		// int ReadMode = 0;
-		BufferedReader characterfile = null;
-		try {
-			characterfile = new BufferedReader(new FileReader("./"+FileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(FileName+": file not found.");
-			return false;
-		}
-		try {
+		try (BufferedReader characterfile = new BufferedReader(new FileReader("./"+FileName))) {
 			line = characterfile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(FileName+": error loading file.");
-			return false;
+			return;
 		}
 		while(EndOfFile == false && line != null) {
 			line = line.trim();
@@ -918,23 +894,7 @@ public class NPCHandler {
 				if (token.equals("npc")) {
 					newNPCList(Integer.parseInt(token3[0]), token3[1], Integer.parseInt(token3[2]), Integer.parseInt(token3[3]));
 				}
-			} else {
-				if (line.equals("[ENDOFNPCLIST]")) {
-					try { characterfile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = characterfile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { characterfile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
-
-	
-
-	
-
-	
 }

@@ -4,8 +4,6 @@ import java.io.*;
 
 import server.*;
 import server.util.*;
-import server.model.players.*;
-import server.model.items.*;
 
 /**
 * Shops
@@ -99,26 +97,19 @@ public class ShopHandler {
 		ShopItemsDelay[ShopID][ArrayID] = 0;
 	}
 
-	public boolean loadShops(String FileName) {
+	public void loadShops(String FileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
 		String token2_2 = "";
 		String[] token3 = new String[(MaxShopItems * 2)];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
-		BufferedReader characterfile = null;
-		try {
-			characterfile = new BufferedReader(new FileReader("./data/"+FileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(FileName+": file not found.");
-			return false;
-		}
-		try {
+		// int ReadMode = 0;
+		try (BufferedReader characterfile = new BufferedReader(new FileReader("./data/"+FileName))) {
 			line = characterfile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(FileName+": error loading file.");
-			return false;
+			return;
 		}
 		while(EndOfFile == false && line != null) {
 			line = line.trim();
@@ -151,17 +142,7 @@ public class ShopHandler {
 					}
 					TotalShops++;
 				}
-			} else {
-				if (line.equals("[ENDOFSHOPLIST]")) {
-					try { characterfile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = characterfile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { characterfile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
 }

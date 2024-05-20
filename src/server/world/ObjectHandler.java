@@ -100,26 +100,19 @@ public class ObjectHandler {
 		}
 	}
 
-	public boolean loadGlobalObjects(String fileName) {
+	public void loadGlobalObjects(String fileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
-		BufferedReader objectFile = null;
-		try {
-			objectFile = new BufferedReader(new FileReader("./"+fileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(fileName+": file not found.");
-			return false;
-		}
-		try {
+		// int ReadMode = 0;
+		try (BufferedReader objectFile = new BufferedReader(new FileReader("./"+fileName))) {
 			line = objectFile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(fileName+": error loading file.");
-			return false;
+			return;
 		}
 		while(EndOfFile == false && line != null) {
 			line = line.trim();
@@ -139,18 +132,8 @@ public class ObjectHandler {
 					Objects object = new Objects(Integer.parseInt(token3[0]), Integer.parseInt(token3[1]), Integer.parseInt(token3[2]), Integer.parseInt(token3[3]), Integer.parseInt(token3[4]), Integer.parseInt(token3[5]), 0);
 					addObject(object);
 				}
-			} else {
-				if (line.equals("[ENDOFOBJECTLIST]")) {
-					try { objectFile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = objectFile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { objectFile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
 	
 	
@@ -203,26 +186,19 @@ public class ObjectHandler {
 		}
 	}
 		
-	public boolean loadDoorConfig(String fileName) {
+	public void loadDoorConfig(String fileName) {
 		String line = "";
 		String token = "";
 		String token2 = "";
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
-		int ReadMode = 0;
-		BufferedReader objectFile = null;
-		try {
-			objectFile = new BufferedReader(new FileReader("./"+fileName));
-		} catch(FileNotFoundException fileex) {
-			Misc.println(fileName+": file not found.");
-			return false;
-		}
-		try {
+		// int ReadMode = 0;
+		try (BufferedReader objectFile = new BufferedReader(new FileReader("./"+fileName))) {
 			line = objectFile.readLine();
 		} catch(IOException ioexception) {
 			Misc.println(fileName+": error loading file.");
-			return false;
+			return;
 		}
 		int door = 0;
 		while(EndOfFile == false && line != null) {
@@ -247,19 +223,7 @@ public class ObjectHandler {
 					doors[door][4] = Integer.parseInt(token3[4]);
 					door++;
 				}
-			} else {
-				if (line.equals("[ENDOFDOORLIST]")) {
-					try { objectFile.close(); } catch(IOException ioexception) { }
-					return true;
-				}
 			}
-			try {
-				line = objectFile.readLine();
-			} catch(IOException ioexception1) { EndOfFile = true; }
 		}
-		try { objectFile.close(); } catch(IOException ioexception) { }
-		return false;
 	}
-	
-	
 }
