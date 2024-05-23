@@ -1,3 +1,4 @@
+figure out headicons
 spam click crash:
 java.lang.ArrayIndexOutOfBoundsException: Index 54275 out of bounds for length 2662
         at Game.updateSequences(Game.java:8329)
