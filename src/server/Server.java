@@ -69,6 +69,8 @@ public class Server implements Runnable {
 			}
 			String connectingHost = socket.socket().getInetAddress().getHostAddress();
 			if (!ConnectionHandler.floodProtection(connectingHost) && !ConnectionHandler.containsIp(connectingHost) && !ConnectionHandler.isIpBanned(connectingHost)) {
+			// NOTE WTF
+			if (!ConnectionHandler.isIpBanned(connectingHost)) {
 				ConnectionHandler.addIp(connectingHost);
 				socket.configureBlocking(false);
 				SelectionKey key = socket.register(selector, SelectionKey.OP_READ);
@@ -79,6 +81,7 @@ public class Server implements Runnable {
 				Misc.println("ClientHandler: Rejected " + connectingHost);
 				socket.close();
 				continue;
+				}
 			}
 		}
 	}
